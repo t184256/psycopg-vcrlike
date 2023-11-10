@@ -1,0 +1,20 @@
+- request: {binary: null, params: null, prepare: null, query: 'CREATE TABLE o (i int,
+      s varchar(50))'}
+  response: null
+- request:
+    binary: null
+    params: [2, b]
+    prepare: null
+    query: INSERT INTO o VALUES (%s, %s)
+  response: null
+- request:
+    binary: null
+    params: [1, a]
+    prepare: null
+    query: INSERT INTO o VALUES (%s, %s)
+  response: null
+- request: {binary: null, params: null, prepare: null, query: SELECT * FROM o ORDER
+      BY i ASC}
+  response:
+  - [1, a]
+  - [2, b]
