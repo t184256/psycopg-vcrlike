@@ -12,10 +12,10 @@ jobs:
     - uses: DeterminateSystems/nix-installer-action@main
     - uses: DeterminateSystems/magic-nix-cache-action@main
     - run: nix build --no-link
-    - run: nix develop -c python -m pytest -vvv  # replay
-    - run: rm -r tests/cassettes
-    - run: nix develop -c python -m pytest -vvv  # rewrite
-    - run: nix develop -c python -m pytest -vvv  # replay
+    - run: nix develop -c python -m pytest -vvv
+    - run: rm -r tests/cassettes/test_smoke
+    - run: nix develop -c python -m pytest -vvv
+    - run: nix develop -c python -m pytest -vvv
     - run: git diff-index HEAD -p --exit-code
     - run: nix develop -c ruff check .
     - run: nix develop -c ruff format --check .
@@ -31,10 +31,10 @@ jobs:
       - run: sudo apt update && sudo apt -y install git-core
       - run: pip3 install -U setuptools pip
       - run: pip3 install .[test]
-      - run: pytest -vvv  # replay
+      - run: pytest -vvv
       - run: rm -r tests/cassettes
-      - run: pytest -vvv  # rewrite
-      - run: pytest -vvv  # replay
+      - run: pytest -vvv --record-mode=rewrite
+      - run: pytest -vvv
       - run: git diff
       - run: git status
       - run: git diff-index HEAD -p --exit-code

@@ -26,30 +26,18 @@ interactions:
     headers:
       Accept-Ranges:
       - bytes
-      Age:
-      - '485524'
       Cache-Control:
       - max-age=604800
-      Content-Encoding:
-      - gzip
-      Content-Length:
-      - '648'
       Content-Type:
       - text/html; charset=UTF-8
-      Date:
-      - Mon, 13 Nov 2023 17:10:27 GMT
-      Etag:
-      - '"3147526947+gzip"'
-      Expires:
-      - Mon, 20 Nov 2023 17:10:27 GMT
       Last-Modified:
       - Thu, 17 Oct 2019 07:18:26 GMT
-      Server:
-      - ECS (dcb/7EA3)
       Vary:
       - Accept-Encoding
       X-Cache:
       - HIT
+      content-length:
+      - '1256'
     status:
       code: 200
       message: OK
