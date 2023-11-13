@@ -3,6 +3,7 @@
 
 """Pytest plugin provided by psycopg_vcrlike."""
 
+import contextlib
 import io
 import pathlib
 import typing
@@ -258,6 +259,7 @@ def _replaying_stub_classes(  # noqa: C901
             return ReplayingStubAsyncConnection()
 
         @typing.no_type_check
+        @contextlib.asynccontextmanager
         async def connection(  # noqa: ANN202
             self,  # noqa: PLR6301
             timeout: float | None = None,  # noqa: ARG002
