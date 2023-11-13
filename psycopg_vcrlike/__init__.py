@@ -299,6 +299,7 @@ def _psycopg_vcrlike(
             co,
         )
         pool_async.AsyncConnectionPool = cp  # type: ignore[misc,assignment]
+        psycopg_pool.AsyncConnectionPool = cp  # type: ignore[misc,assignment]
         yield  # replay
 
     conn_async.AsyncCursor = _orig_cu  # type: ignore[attr-defined]
@@ -312,6 +313,7 @@ def _psycopg_vcrlike(
 
     if _orig_cp is not None:
         pool_async.AsyncConnectionPool = _orig_cp  # type: ignore[misc]
+        psycopg_pool.AsyncConnectionPool = _orig_cp  # type: ignore[misc]
 
 
 __all__: list[str] = []
