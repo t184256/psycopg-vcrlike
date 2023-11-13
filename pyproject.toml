@@ -17,6 +17,7 @@ dependencies = [
   "psycopg >= 3.1",
   "psycopg_pool >= 3.1",
   "aiofiles >= 23",
+  "pytest-recording >= 0.13", "aiohttp >= 3.8",
   "pytest >= 7.4", "pytest-recording >= 0.13.0",
   "ruamel.yaml >= 0.18",
 ]

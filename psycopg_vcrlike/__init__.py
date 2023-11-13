@@ -282,9 +282,11 @@ def _psycopg_vcrlike(
         conn_async.AsyncCursor = cu  # type: ignore[attr-defined,assignment]
         psycopg.cursor_async.AsyncCursor = cu  # type: ignore[misc,assignment]
         psycopg.AsyncCursor = cu  # type: ignore[misc,assignment]
-        vcr_path.with_suffix('.tmp').unlink(missing_ok=True)
+        outfile = vcr_path.with_suffix('.tmp')
+        outfile.unlink(missing_ok=True)
         yield  # record
-        vcr_path.with_suffix('.tmp').rename(vcr_path)
+        if outfile.exists():
+            outfile.rename(vcr_path)
     else:
         # replay queries and results
         _orig_co = conn_async.AsyncConnection

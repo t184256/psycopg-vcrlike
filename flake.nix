@@ -21,6 +21,7 @@
         pytestCheckHook pytest-asyncio pytest-postgresql
         mypy pytest-mypy
         pytest-postgresql
+        pytest-recording aiohttp
         types-aiofiles
       ] ++ [pkgs.ruff]);
       devTools = pkgs: pyPackages: (with pyPackages; [
