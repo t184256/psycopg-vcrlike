@@ -6,6 +6,7 @@
 import contextlib
 import io
 import pathlib
+import types
 import typing
 
 import _pytest
@@ -174,6 +175,17 @@ def _replaying_stub_classes(  # noqa: C901
         async def close(self) -> None:
             pass
 
+        async def __aenter__(self: typing.Self) -> typing.Self:
+            return self
+
+        async def __aexit__(
+            self: typing.Self,
+            exc_type: type[BaseException] | None,
+            exc_val: BaseException | None,
+            exc_tb: types.TracebackType | None,
+        ) -> bool | None:
+            return None
+
     class ReplayingStubAsyncConnection:
         """Replaying stub of AsyncConnection."""
 
@@ -206,6 +218,17 @@ def _replaying_stub_classes(  # noqa: C901
         @typing.no_type_check
         async def commit(self, *a, **kwa) -> None:  # noqa: ANN002, ANN003
             pass
+
+        async def __aenter__(self: typing.Self) -> typing.Self:
+            return self
+
+        async def __aexit__(
+            self: typing.Self,
+            exc_type: type[BaseException] | None,
+            exc_val: BaseException | None,
+            exc_tb: types.TracebackType | None,
+        ) -> bool | None:
+            return None
 
     @typing.no_type_check
     class ReplayingStubAsyncConnectionPool:
@@ -265,6 +288,17 @@ def _replaying_stub_classes(  # noqa: C901
             timeout: float | None = None,  # noqa: ARG002
         ):
             yield ReplayingStubAsyncConnection()
+
+        async def __aenter__(self: typing.Self) -> typing.Self:
+            return self
+
+        async def __aexit__(
+            self: typing.Self,
+            exc_type: type[BaseException] | None,
+            exc_val: BaseException | None,
+            exc_tb: types.TracebackType | None,
+        ) -> bool | None:
+            return None
 
     return (
         ReplayingStubAsyncCursor,
