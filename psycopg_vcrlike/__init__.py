@@ -210,6 +210,29 @@ def _replaying_stub_classes(  # noqa: C901
     class ReplayingStubAsyncConnectionPool:
         """Replaying stub of AsyncConnectionPool."""
 
+        def __init__(  # noqa: PLR0913
+            self,
+            conninfo: str = '',
+            *,
+            connection_class: typing.Any = None,  # noqa: ANN401
+            kwargs: dict[str, typing.Any] | None = None,
+            min_size: int = 4,
+            max_size: int | None = None,
+            open: bool | None = None,  # noqa: A002
+            configure: typing.Any = None,  # noqa: ANN401
+            check: typing.Any = None,  # noqa: ANN401
+            reset: typing.Any = None,  # noqa: ANN401
+            name: str | None = None,
+            timeout: float = 30.0,
+            max_waiting: int = 0,
+            max_lifetime: float = 60 * 60.0,
+            max_idle: float = 10 * 60.0,
+            reconnect_timeout: float = 5 * 60.0,
+            reconnect_failed: typing.Any | None = None,  # noqa: ANN401
+            num_workers: int = 3,
+        ) -> None:
+            pass
+
         @typing.no_type_check
         async def open(self, *a, **kwa) -> None:  # noqa: A003, ANN002, ANN003
             pass
