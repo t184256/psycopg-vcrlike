@@ -24,8 +24,6 @@ interactions:
         permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
         information...</a></p>\n</div>\n</body>\n</html>\n"
     headers:
-      Accept-Ranges:
-      - bytes
       Cache-Control:
       - max-age=604800
       Content-Type:

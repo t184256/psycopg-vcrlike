@@ -21,7 +21,14 @@ async def test_smoke_aiohttp() -> None:
 # pytest-recording configuration
 
 
-_SCRUB_HEADERS_RESPONSE = ('Age', 'Date', 'Etag', 'Expires', 'Server')
+_SCRUB_HEADERS_RESPONSE = (
+    'Accept-Ranges',
+    'Age',
+    'Date',
+    'Etag',
+    'Expires',
+    'Server',
+)
 
 
 def _scrub_response(
