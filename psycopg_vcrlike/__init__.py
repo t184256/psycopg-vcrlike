@@ -3,6 +3,7 @@
 
 """Pytest plugin provided by psycopg_vcrlike."""
 
+import asyncio
 import contextlib
 import io
 import pathlib
@@ -109,7 +110,7 @@ def _recording_async_cursor(
                 'prepare': prepare,
                 'binary': binary,
             }
-            await _record(vcr_path, request, results)
+            await asyncio.shield(_record(vcr_path, request, results))
             return r
 
     return RecordingAsyncCursor
@@ -135,7 +136,7 @@ def _replaying_stub_classes(  # noqa: C901
             prepare: bool | None = None,
             binary: bool | None = None,
         ) -> typing.Self:
-            await self._load_recording()
+            await asyncio.shield(self._load_recording())
             request = {
                 'query': query,
                 'params': list(params) if params is not None else None,
