@@ -58,8 +58,8 @@ class _LimitedAsyncCursor:
     ) -> None:
         raise NotImplementedError
 
-    async def stream(
-        self,  # noqa: PLR6301
+    async def stream(  # noqa: PLR6301
+        self,
         query: Query,  # noqa: ARG002
         params: Params | None = None,  # noqa: ARG002
         *,
@@ -209,8 +209,8 @@ def _replaying_stub_classes(  # noqa: C901
             return curr.execute(*a, **kwa)
 
         @typing.no_type_check
-        def cursor(
-            self,  # noqa: PLR6301
+        def cursor(  # noqa: PLR6301
+            self,
             *a,  # noqa: ARG002, ANN002
             **kwa,  # noqa: ARG002, ANN003
         ) -> None:
@@ -276,16 +276,16 @@ def _replaying_stub_classes(  # noqa: C901
             pass
 
         @typing.no_type_check
-        async def getconn(  # noqa: ANN202
-            self,  # noqa: PLR6301
+        async def getconn(  # noqa: ANN202, PLR6301
+            self,
             timeout: float | None = None,  # noqa: ARG002
         ):
             return ReplayingStubAsyncConnection()
 
         @typing.no_type_check
         @contextlib.asynccontextmanager
-        async def connection(  # noqa: ANN202
-            self,  # noqa: PLR6301
+        async def connection(  # noqa: ANN202, PLR6301
+            self,
             timeout: float | None = None,  # noqa: ARG002
         ):
             yield ReplayingStubAsyncConnection()
