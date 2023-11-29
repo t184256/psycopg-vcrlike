@@ -11,8 +11,6 @@ import types
 import typing
 
 import _pytest
-import aiofiles
-import aiofiles.os
 import psycopg
 import psycopg_pool
 import pytest
@@ -20,6 +18,8 @@ import ruamel.yaml
 from psycopg import AsyncConnection, AsyncCursor
 from psycopg.abc import Params, Query
 from psycopg.rows import Row
+
+from psycopg_vcrlike import _aio_fileutils_builtin as aiofileutils
 
 CursorRow = typing.TypeVar('CursorRow')
 
@@ -43,9 +43,12 @@ async def _record(
         yaml = ruamel.yaml.YAML(typ='safe')
         yaml.dump([{'request': request, 'response': response}], sio)
 
-        await aiofiles.os.makedirs(vcr_path.parent, exist_ok=True)
-        async with aiofiles.open(vcr_path.with_suffix('.tmp'), 'a') as f:
-            await f.write(sio.getvalue())
+        await aiofileutils.makedirs(vcr_path.parent, exist_ok=True)
+        await aiofileutils.write_file(
+            vcr_path.with_suffix('.tmp'),
+            'a',
+            sio.getvalue(),
+        )
 
 
 class _LimitedAsyncCursor:
@@ -110,7 +113,7 @@ def _recording_async_cursor(
                 'prepare': prepare,
                 'binary': binary,
             }
-            await asyncio.shield(_record(vcr_path, request, results))
+            await _record(vcr_path, request, results)
             return r
 
     return RecordingAsyncCursor
@@ -123,10 +126,10 @@ def _replaying_stub_classes(  # noqa: C901
         """Replaying stub of AsyncCursor."""
 
         async def _load_recording(self) -> None:
-            async with aiofiles.open(vcr_path) as f:
-                recording = await f.read()
-            yaml = ruamel.yaml.YAML(typ='safe')
-            self._recording = list(yaml.load(recording))
+            if not hasattr(self, '_recording'):
+                recording = await aiofileutils.read_file(vcr_path, 'r')
+                yaml = ruamel.yaml.YAML(typ='safe')
+                self._recording = list(yaml.load(recording))
 
         async def execute(
             self: typing.Self,
@@ -136,7 +139,11 @@ def _replaying_stub_classes(  # noqa: C901
             prepare: bool | None = None,
             binary: bool | None = None,
         ) -> typing.Self:
-            await asyncio.shield(self._load_recording())
+            try:
+                await self._load_recording()
+            except (GeneratorExit, asyncio.CancelledError):
+                return self
+
             request = {
                 'query': query,
                 'params': list(params) if params is not None else None,

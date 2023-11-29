@@ -12,11 +12,22 @@ jobs:
     - uses: DeterminateSystems/nix-installer-action@main
     - uses: DeterminateSystems/magic-nix-cache-action@main
     - run: nix build --no-link
-    - run: nix develop -c python -m pytest -vvv
-    - run: rm -r tests/cassettes/test_smoke
-    - run: nix develop -c python -m pytest -vvv
-    - run: nix develop -c python -m pytest -vvv
+    - run: git diff
     - run: git diff-index HEAD -p --exit-code
+
+    - run: nix develop -c python -m pytest -vvv
+    - run: git diff
+    - run: git diff-index HEAD -p --exit-code
+
+    - run: rm -r tests/cassettes/test_smoke
+    - run: nix develop -c python -m pytest -vvv --record-mode=rewrite
+    - run: git diff
+    - run: git diff-index HEAD -p --exit-code
+
+    - run: nix develop -c python -m pytest -vvv
+    - run: git diff
+    - run: git diff-index HEAD -p --exit-code
+
     - run: nix develop -c ruff check .
     - run: nix develop -c ruff format --check .
     - run: nix flake check
@@ -31,12 +42,21 @@ jobs:
       - run: sudo apt update && sudo apt -y install git-core
       - run: pip3 install -U setuptools pip
       - run: pip3 install .[test]
-      - run: pytest -vvv
-      - run: rm -r tests/cassettes
-      - run: pytest -vvv --record-mode=rewrite
-      - run: pytest -vvv
+      - run: pip3 uninstall -y psycopg-vcrlike
       - run: git diff
-      - run: git status
+      - run: git diff-index HEAD -p --exit-code
+
+      - run: PYTHONPATH=.:$PYTHONPATH pytest -vvv
+      - run: git diff
+      - run: git diff-index HEAD -p --exit-code
+
+      - run: rm -r tests/cassettes
+      - run: PYTHONPATH=.:$PYTHONPATH pytest -vvv --record-mode=rewrite
+      - run: git diff
+      - run: git diff-index HEAD -p --exit-code
+
+      - run: PYTHONPATH=.:$PYTHONPATH pytest -vvv
+      - run: git diff
       - run: git diff-index HEAD -p --exit-code
 
   ruff:

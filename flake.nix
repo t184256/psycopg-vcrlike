@@ -10,7 +10,6 @@
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
     let
       deps = pyPackages: with pyPackages; [
-        aiofiles
         psycopg
         psycopg.pool
         pytest
@@ -22,7 +21,6 @@
         mypy pytest-mypy
         pytest-postgresql
         pytest-recording aiohttp
-        types-aiofiles
       ] ++ [pkgs.ruff]);
       devTools = pkgs: pyPackages: (with pyPackages; [
         pytest-icecream
@@ -38,20 +36,6 @@
           nativeBuildInputs = [ python3Packages.setuptools ];
           checkInputs = tools pkgs python3Packages;
         };
-
-      types-aiofiles-overlay = final: prev: {
-        pythonPackagesExtensions =
-          prev.pythonPackagesExtensions ++ [(pyFinal: pyPrev: {
-            types-aiofiles = pyPrev.buildPythonPackage rec {
-              pname = "types-aiofiles";
-              version = "23.2.0.0";
-              src = prev.fetchPypi {
-                inherit pname version;
-                hash = "sha256-tqcSe9Iy4IAlMoN7hBQLHNXfGe5gvqOlaZcg0rWDNhs=";
-              };
-            };
-          })];
-      };
 
       fresh-mypy-overlay = final: prev: {
         pythonPackagesExtensions =
@@ -83,7 +67,6 @@
 
       overlay = nixpkgs.lib.composeManyExtensions [
         overlay-psycopg-vcrlike
-        types-aiofiles-overlay
       ];
 
       overlay-all = nixpkgs.lib.composeManyExtensions [

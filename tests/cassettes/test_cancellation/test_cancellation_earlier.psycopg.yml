@@ -1,0 +1,16 @@
+- request: {binary: null, params: null, prepare: null, query: DROP TABLE IF EXISTS
+      t1}
+  response: null
+- request: {binary: null, params: null, prepare: null, query: 'CREATE TABLE t1 (i
+      int, s varchar(50))'}
+  response: null
+- request:
+    binary: null
+    params: [1, a]
+    prepare: null
+    query: INSERT INTO t1 VALUES (%s, %s)
+  response: null
+- request: {binary: null, params: null, prepare: null, query: SELECT * FROM t1 ORDER
+      BY i ASC}
+  response:
+  - [1, a]
