@@ -16,15 +16,15 @@ requires-python = ">=3.11"
 dependencies = [
   "psycopg >= 3.1",
   "psycopg_pool >= 3.1",
-  "aiofiles >= 23",
   "pytest-recording >= 0.13", "aiohttp >= 3.8",
   "pytest >= 7.4", "pytest-recording >= 0.13.0",
   "ruamel.yaml >= 0.18",
 ]
 optional-dependencies.test = [
+  "aiofile >= 3.8",
+  "aiofiles >= 23",
   "types-aiofiles >= 23.2",
   "pytest-asyncio >= 0.21", "pytest-postgresql >= 5",
-  "coverage >= 7", "pytest-cov >= 4",
   "mypy >= 1.7", "pytest-mypy >= 0.10",
   "ruff >= 0.1.4",
 ]

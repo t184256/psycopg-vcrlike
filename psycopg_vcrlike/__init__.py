@@ -6,13 +6,12 @@
 import asyncio
 import contextlib
 import io
+import os
 import pathlib
 import types
 import typing
 
 import _pytest
-import aiofiles
-import aiofiles.os
 import psycopg
 import psycopg_pool
 import pytest
@@ -20,6 +19,34 @@ import ruamel.yaml
 from psycopg import AsyncConnection, AsyncCursor
 from psycopg.abc import Params, Query
 from psycopg.rows import Row
+
+if os.getenv('AIOF') == 'aiofile':
+    from psycopg_vcrlike import _aio_fileutils_aiofile
+
+    aiofileutils = _aio_fileutils_aiofile
+elif os.getenv('AIOF') == 'aiofiles':
+    from psycopg_vcrlike import _aio_fileutils_aiofiles
+
+    aiofileutils = _aio_fileutils_aiofiles  # type: ignore[misc]
+elif os.getenv('AIOF') == 'builtin':
+    from psycopg_vcrlike import _aio_fileutils_builtin
+
+    aiofileutils = _aio_fileutils_builtin  # type: ignore[misc]
+else:
+    try:
+        from psycopg_vcrlike import _aio_fileutils_aiofile
+
+        aiofileutils = _aio_fileutils_aiofile
+    except ImportError:
+        try:
+            from psycopg_vcrlike import _aio_fileutils_aiofiles
+
+            aiofileutils = _aio_fileutils_aiofiles  # type: ignore[misc]
+        except ImportError:
+            from psycopg_vcrlike import _aio_fileutils_builtin
+
+            aiofileutils = _aio_fileutils_builtin  # type: ignore[misc]
+
 
 CursorRow = typing.TypeVar('CursorRow')
 
@@ -43,9 +70,12 @@ async def _record(
         yaml = ruamel.yaml.YAML(typ='safe')
         yaml.dump([{'request': request, 'response': response}], sio)
 
-        await aiofiles.os.makedirs(vcr_path.parent, exist_ok=True)
-        async with aiofiles.open(vcr_path.with_suffix('.tmp'), 'a') as f:
-            await f.write(sio.getvalue())
+        await aiofileutils.makedirs(vcr_path.parent, exist_ok=True)
+        await aiofileutils.write_file(
+            vcr_path.with_suffix('.tmp'),
+            'a',
+            sio.getvalue(),
+        )
 
 
 class _LimitedAsyncCursor:
@@ -123,8 +153,7 @@ def _replaying_stub_classes(  # noqa: C901
         """Replaying stub of AsyncCursor."""
 
         async def _load_recording(self) -> None:
-            async with aiofiles.open(vcr_path) as f:
-                recording = await f.read()
+            recording = await aiofileutils.read_file(vcr_path, 'r')
             yaml = ruamel.yaml.YAML(typ='safe')
             self._recording = list(yaml.load(recording))
 

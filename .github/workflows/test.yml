@@ -12,11 +12,35 @@ jobs:
     - uses: DeterminateSystems/nix-installer-action@main
     - uses: DeterminateSystems/magic-nix-cache-action@main
     - run: nix build --no-link
+
+    # default
     - run: nix develop -c python -m pytest -vvv
     - run: rm -r tests/cassettes/test_smoke
     - run: nix develop -c python -m pytest -vvv
     - run: nix develop -c python -m pytest -vvv
     - run: git diff-index HEAD -p --exit-code
+
+    # aiofiles
+    - run: nix develop -c env AIOF=aiofiles python -m pytest -vvv
+    - run: rm -r tests/cassettes/test_smoke
+    - run: nix develop -c env AIOF=aiofiles python -m pytest -vvv
+    - run: nix develop -c env AIOF=aiofiles python -m pytest -vvv
+    - run: git diff-index HEAD -p --exit-code
+
+    # aiofile
+    - run: nix develop -c env AIOF=aiofile python -m pytest -vvv
+    - run: rm -r tests/cassettes/test_smoke
+    - run: nix develop -c env AIOF=aiofile python -m pytest -vvv
+    - run: nix develop -c env AIOF=aiofile python -m pytest -vvv
+    - run: git diff-index HEAD -p --exit-code
+
+    # builtin
+    - run: nix develop -c env AIOF=builtin python -m pytest -vvv
+    - run: rm -r tests/cassettes/test_smoke
+    - run: nix develop -c env AIOF=builtin python -m pytest -vvv
+    - run: nix develop -c env AIOF=builtin python -m pytest -vvv
+    - run: git diff-index HEAD -p --exit-code
+
     - run: nix develop -c ruff check .
     - run: nix develop -c ruff format --check .
     - run: nix flake check
@@ -31,12 +55,34 @@ jobs:
       - run: sudo apt update && sudo apt -y install git-core
       - run: pip3 install -U setuptools pip
       - run: pip3 install .[test]
+      - run: pip3 remove .
+
+      # default
       - run: pytest -vvv
       - run: rm -r tests/cassettes
       - run: pytest -vvv --record-mode=rewrite
       - run: pytest -vvv
-      - run: git diff
-      - run: git status
+      - run: git diff-index HEAD -p --exit-code
+
+      # aiofiles
+      - run: env AIOF=aiofiles pytest -vvv
+      - run: rm -r tests/cassettes
+      - run: env AIOF=aiofiles pytest -vvv --record-mode=rewrite
+      - run: env AIOF=aiofiles pytest -vvv
+      - run: git diff-index HEAD -p --exit-code
+
+      # aiofile
+      - run: env AIOF=aiofiles pytest -vvv
+      - run: rm -r tests/cassettes
+      - run: env AIOF=aiofiles pytest -vvv --record-mode=rewrite
+      - run: env AIOF=aiofiles pytest -vvv
+      - run: git diff-index HEAD -p --exit-code
+
+      # builtin
+      - run: env AIOF=builtin pytest -vvv
+      - run: rm -r tests/cassettes
+      - run: env AIOF=builtin pytest -vvv --record-mode=rewrite
+      - run: env AIOF=builtin pytest -vvv
       - run: git diff-index HEAD -p --exit-code
 
   ruff:

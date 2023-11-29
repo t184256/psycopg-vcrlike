@@ -10,6 +10,7 @@
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
     let
       deps = pyPackages: with pyPackages; [
+        aiofile
         aiofiles
         psycopg
         psycopg.pool
